@@ -1,2 +1,6 @@
 /* jshint devel:true */
-console.log('\'Allo \'Allo!');
+var Chart = require('./chart');
+
+window.onload = function() {
+  new Chart();
+};

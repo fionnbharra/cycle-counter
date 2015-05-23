@@ -1,10 +1,20 @@
 /*global -$ */
 'use strict';
-// generated on 2015-05-23 using generator-gulp-webapp 0.3.0
+// generated on 2015-02-24 using generator-gulp-webapp 0.3.0
 var gulp = require('gulp');
 var $ = require('gulp-load-plugins')();
 var browserSync = require('browser-sync');
 var reload = browserSync.reload;
+var gutil = require('gulp-util');
+var sourcemaps = require('gulp-sourcemaps');
+var source = require('vinyl-source-stream');
+var buffer = require('vinyl-buffer');
+var watchify = require('watchify');
+var browserify = require('browserify'),
+  sourceFile = './app/scripts/main.js',
+  destFolder = './app/scripts/',
+  destFileName = 'bundle.js';
+
 
 gulp.task('styles', function () {
   return gulp.src('app/styles/main.scss')
@@ -44,6 +54,33 @@ gulp.task('html', ['styles'], function () {
     .pipe(gulp.dest('dist'));
 });
 
+// Scripts
+gulp.task('scripts', function () {
+    var bundler = watchify(browserify({
+        entries: [sourceFile],
+        insertGlobals: true,
+        cache: {},
+        packageCache: {},
+        fullPaths: true
+    }));
+
+    bundler.on('update', rebundle);
+
+    function rebundle() {
+      return bundler.bundle()
+        // log errors if they happen
+        .on('error', gutil.log.bind(gutil, 'Browserify Error'))
+        .pipe(source(destFileName))
+          .pipe(buffer())
+          .pipe(sourcemaps.init({loadMaps: true})) // loads map from browserify file
+          .pipe(sourcemaps.write()) // writes .map file
+        .pipe(gulp.dest(destFolder));
+    }
+
+    return rebundle();
+
+});
+
 gulp.task('images', function () {
   return gulp.src('app/images/**/*')
     .pipe($.cache($.imagemin({
@@ -75,7 +112,7 @@ gulp.task('extras', function () {
 
 gulp.task('clean', require('del').bind(null, ['.tmp', 'dist']));
 
-gulp.task('serve', ['styles', 'fonts'], function () {
+gulp.task('serve', ['styles', 'fonts', 'scripts'], function () {
   browserSync({
     notify: false,
     port: 9000,
@@ -90,7 +127,7 @@ gulp.task('serve', ['styles', 'fonts'], function () {
   // watch for changes
   gulp.watch([
     'app/*.html',
-    'app/scripts/**/*.js',
+    'app/scripts/bundle.js',
     'app/images/**/*',
     '.tmp/fonts/**/*'
   ]).on('change', reload);
@@ -118,7 +155,7 @@ gulp.task('wiredep', function () {
     .pipe(gulp.dest('app'));
 });
 
-gulp.task('build', ['jshint', 'html', 'images', 'fonts', 'extras'], function () {
+gulp.task('build', ['html', 'images', 'fonts', 'extras'], function () {
   return gulp.src('dist/**/*').pipe($.size({title: 'build', gzip: true}));
 });
 
