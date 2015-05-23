@@ -1,0 +1,83 @@
+.hacky-margin-top {
+  margin-top: 40px;
+}
+
+.hacky-margin-bottom {
+  margin-bottom: 40px;
+}
+
+.hacky-small-margin-bottom {
+  margin-bottom: 10px;
+}
+
+.force-line-height {
+  line-height: 2.4;
+}
+
+circle {
+  stroke: $mid-orange;
+  fill: $mid-orange;
+  cursor: pointer;
+}
+
+.area {
+  fill:rgba($mid-orange, 0.4);
+
+  &.AvgTemp {
+    fill: rgba($blue, 0.3);
+  }
+}
+
+.axis {
+  text {
+    fill: #000;
+  }
+}
+
+.axis path,
+.axis line {
+    fill: none;
+    stroke: $grey;
+    shape-rendering: crispEdges;
+}
+
+.yaxis path {
+  display: none;
+}
+
+.axis text {
+  font-size: 14px;
+}
+
+.line {
+  fill: none;
+  stroke: $mid-orange;
+  stroke-width: 1.5px;
+  transition: stroke .2s;
+
+  &.apparentTemperatureMax {
+    stroke: $blue;
+
+    &.fader {
+      stroke: rgba($blue, .2);
+    }
+  }
+
+  &.fader {
+    stroke: rgba($mid-orange, .2);
+  }
+
+
+}
+
+.grid .tick {
+    stroke: rgba(222,222,222,.5);
+    opacity: 0.2;
+}
+.grid path {
+    stroke-width: 0;
+}
+
+span#debug-info {
+  font-weight: normal;
+}
