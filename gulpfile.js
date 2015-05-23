@@ -10,6 +10,7 @@ var sourcemaps = require('gulp-sourcemaps');
 var source = require('vinyl-source-stream');
 var buffer = require('vinyl-buffer');
 var watchify = require('watchify');
+var ghPages = require('gulp-gh-pages');
 var browserify = require('browserify'),
   sourceFile = './app/scripts/main.js',
   destFolder = './app/scripts/',
@@ -93,6 +94,10 @@ gulp.task('images', function () {
     .pipe(gulp.dest('dist/images'));
 });
 
+gulp.task('data', function () {
+  return gulp.src('app/data/**/*').pipe(gulp.dest('dist/data'));
+  });
+
 gulp.task('fonts', function () {
   return gulp.src(require('main-bower-files')({
     filter: '**/*.{eot,svg,ttf,woff,woff2}'
@@ -155,7 +160,12 @@ gulp.task('wiredep', function () {
     .pipe(gulp.dest('app'));
 });
 
-gulp.task('build', ['html', 'images', 'fonts', 'extras'], function () {
+gulp.task('deploy', function() {
+  return gulp.src('./dist/**/*')
+    .pipe(ghPages());
+});
+
+gulp.task('build', ['html', 'images', 'data','fonts', 'extras'], function () {
   return gulp.src('dist/**/*').pipe($.size({title: 'build', gzip: true}));
 });
 
