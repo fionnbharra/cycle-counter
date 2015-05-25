@@ -11,6 +11,7 @@ var source = require('vinyl-source-stream');
 var buffer = require('vinyl-buffer');
 var watchify = require('watchify');
 var ghPages = require('gulp-gh-pages');
+var rev = require('gulp-rev');
 var browserify = require('browserify'),
   sourceFile = './app/scripts/main.js',
   destFolder = './app/scripts/',
