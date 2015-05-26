@@ -17,7 +17,7 @@ function Model(data_url, callback) {
 Model.prototype.loadData = function (file, callback) {
   var self = this;
 
-  d3.json(file, function(dataset) {
+  d3.json(file, function(error, dataset) {
     callback.apply(self, [dataset]);
   });
 };
