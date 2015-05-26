@@ -15,7 +15,7 @@
 }
 
 circle {
-  stroke: $mid-orange;
+  stroke: $light-orange;
   fill: $mid-orange;
   cursor: pointer;
 }
@@ -24,25 +24,28 @@ circle {
   fill:rgba($mid-orange, 0.4);
 
   &.AvgTemp {
-    fill: rgba($blue, 0.3);
+    // fill: rgba($blue, 0.3);
   }
 }
 
 .axis {
   text {
-    fill: #000;
+    // display: none;
+    fill: $dark-brown;
   }
 }
 
 .axis path,
 .axis line {
     fill: none;
-    stroke: $grey;
+    stroke: $light-purple;
     shape-rendering: crispEdges;
 }
 
 .yaxis path {
-  display: none;
+  fill: none;
+  stroke: $light-purple;
+  shape-rendering: crispEdges;
 }
 
 .axis text {
@@ -51,15 +54,15 @@ circle {
 
 .line {
   fill: none;
-  stroke: $mid-orange;
+  stroke: $light-brown;
   stroke-width: 1.5px;
   transition: stroke .2s;
 
-  &.apparentTemperatureMax {
-    stroke: $blue;
+  &.totalBikes {
+    stroke: $light-orange;
 
     &.fader {
-      stroke: rgba($blue, .2);
+      // stroke: rgba($blue, .2);
     }
   }
 
@@ -71,7 +74,7 @@ circle {
 }
 
 .grid .tick {
-    stroke: rgba(222,222,222,.5);
+    stroke: rgba($light-orange,1);
     opacity: 0.2;
 }
 .grid path {

@@ -45,13 +45,13 @@ Chart.prototype.getXscale = function () {
 };
 
 Chart.prototype.drawGraph = function () {
-  var grid = this.drawGrid();
-  var line1 = this.drawLine(this.dataset, 'totalBikes');
+  // var grid = this.drawGrid();
   var line2 = this.drawLine(this.dataset, 'apparentTemperatureMax');
-  // var area = this.drawArea(this.dataset, 'apparentTemperatureMax');
+  var line1 = this.drawLine(this.dataset, 'totalBikes');
+  var area = this.drawArea(this.dataset, 'apparentTemperatureMax');
   var circles = this.drawCircles(this.dataset);
-  var axes = this.drawAxes();
   var events = this.setEvents( {target: line1} );
+  var axes = this.drawAxes();
 
   return {
     line1: line1,
@@ -167,7 +167,7 @@ Chart.prototype.drawYAxis = function () {
 
   this.svg.append('g')
               .attr('class', 'axis yaxis')
-              .attr('transform', 'translate(0 , -10)')
+              .attr('transform', 'translate(0 , 00)')
               .call(yAxis1);
 
   return yAxis1;
@@ -206,9 +206,10 @@ Chart.prototype.createArea = function(field) {
 Chart.prototype.drawArea = function (data, field) {
   var area = this.createArea(field);
   var t = textures.paths()
-    .d("waves")
+    .d("nylon")
+    .lighter()
     .thicker()
-    .stroke("firebrick");
+    .stroke("#92573B");
   this.svg.call(t);
   // Add the filled area
   return this.svg.append('path')
