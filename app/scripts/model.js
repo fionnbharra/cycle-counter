@@ -32,7 +32,7 @@ Model.prototype.parseWeatherData = function (dataset, temp_field, cost_field) {
 
   // sort by date
   new_dataset.sort(function (a, b) {
-    return a.Date - b.Date;
+    return a.date - b.date;
   });
 
   return new_dataset;
