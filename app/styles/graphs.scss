@@ -28,6 +28,11 @@ circle {
   }
 }
 
+path.bike {
+  stroke: white;
+  fill: $light-orange;
+}
+
 .axis {
   text {
     // display: none;
