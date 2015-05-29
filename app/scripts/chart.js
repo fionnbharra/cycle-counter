@@ -66,7 +66,7 @@ Chart.prototype.drawGraph = function () {
 
 Chart.prototype.loadBike = function (callback) {
   var self = this;
-  d3.xml("../images/bike.svg", "image/svg+xml", function(error, bikeSvg) {
+  d3.xml("http://fionnbharra.github.io/cycle-counter/images/bike.svg", "image/svg+xml", function(error, bikeSvg) {
     callback.apply(self, [bikeSvg]);
   });
 }
