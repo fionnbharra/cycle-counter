@@ -54,7 +54,8 @@ Chart.prototype.drawGraph = function () {
   var events = this.setEvents( {target: line1} );
   var axes = this.drawAxes();
   var self = this;
-  var animated_bike = new Bike('bike.svg', this.svg, line1);
+  var animated_bike = new Bike('bike.svg', this.svg, line1, 14000);
+  var animated_bike = new Bike('bike_2.svg', this.svg, line2, 21000);
 
   return {
     line1: line1,
