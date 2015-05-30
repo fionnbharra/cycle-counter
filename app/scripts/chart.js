@@ -1,6 +1,7 @@
 'use strict';
 var d3 = require('d3-browserify');
 var textures = require('textures/textures');
+var Bike = require('./bike');
 
 function Chart(container, model){
   this.container = container;
@@ -53,7 +54,7 @@ Chart.prototype.drawGraph = function () {
   var events = this.setEvents( {target: line1} );
   var axes = this.drawAxes();
   var self = this;
-  var animated_bike = this.addAnimatedBike(line1);
+  var animated_bike = new Bike('bike.svg', this.svg, line1);
 
   return {
     line1: line1,
@@ -64,61 +65,6 @@ Chart.prototype.drawGraph = function () {
   };
 };
 
-Chart.prototype.loadBike = function (callback) {
-  var self = this;
-  var svg_path = process.env.NODE_ENV === 'development' ? '../images/bike.svg' : '../cycle-counter/images/bike.svg';
-  d3.xml(svg_path, 'image/svg+xml', function(error, bikeSvg) {
-    callback.apply(self, [bikeSvg]);
-  });
-}
-
-Chart.prototype.addAnimatedBike = function(followPath) {
-    var self = this;
-    this.loadBike( function(svg){
-      var importedNode = document.importNode(svg.documentElement, true);
-      var node = process.env.NODE_ENV === 'development' ? 1 : 0;
-      var path = importedNode.childNodes[node];
-
-      function pathStartPoint(path) {
-        var d = path.attr("d"),
-        dsplitted = d.split(" ");
-        return dsplitted[0].split(",");
-      };
-
-      var startPoint = pathStartPoint(followPath);
-      var pos_x = 0;
-      var pos_y = startPoint[1].substring(0, startPoint[1].indexOf('.')) - 39;
-      var marker = self.svg.append('path')
-              .attr('d', d3.select(path).attr('d'))
-              .attr('class', 'bike')
-              .attr("transform", "translate(0," + pos_y + ")")
-      transition();
-
-      function transition() {
-        marker.transition()
-            .duration(17000)
-            .attrTween("transform", translateAlong(followPath.node()))
-            .each("end", transition); // infinite loop
-      };
-
-      function translateAlong(path) {
-        var l = path.getTotalLength();
-        var t0 = 0;
-        return function(i) {
-          return function(t) {
-            var p0 = path.getPointAtLength(t0 * l);//previous point
-            var p = path.getPointAtLength(t * l);////current point
-            var angle = Math.atan2(p.y - p0.y, p.x - p0.x) * 180 / Math.PI;//angle for tangent
-            t0 = t;
-
-            var centerX = p.x - 32,
-            centerY = p.y - 40;
-            return "translate(" + centerX + "," + centerY + ")rotate(" + angle + " 32" + " 40" +")";
-          }
-        }
-      }
-  });
-};
 Chart.prototype.createLine = function (field) {
   var self = this;
   var line = d3
