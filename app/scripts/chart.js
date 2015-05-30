@@ -66,7 +66,8 @@ Chart.prototype.drawGraph = function () {
 
 Chart.prototype.loadBike = function (callback) {
   var self = this;
-  d3.xml("http://fionnbharra.github.io/cycle-counter/images/bike.svg", "image/svg+xml", function(error, bikeSvg) {
+  var svg_path = process.env.NODE_ENV === 'development' ? '../images/bike.svg' : '../cycle-counter/images/bike.svg';
+  d3.xml(svg_path, 'image/svg+xml', function(error, bikeSvg) {
     callback.apply(self, [bikeSvg]);
   });
 }
@@ -75,7 +76,8 @@ Chart.prototype.addAnimatedBike = function(followPath) {
     var self = this;
     this.loadBike( function(svg){
       var importedNode = document.importNode(svg.documentElement, true);
-      var path = importedNode.childNodes[1];
+      var node = process.env.NODE_ENV === 'development' ? 1 : 0;
+      var path = importedNode.childNodes[node];
 
       function pathStartPoint(path) {
         var d = path.attr("d"),

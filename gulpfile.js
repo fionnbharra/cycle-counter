@@ -12,11 +12,12 @@ var buffer = require('vinyl-buffer');
 var watchify = require('watchify');
 var ghPages = require('gulp-gh-pages');
 var rev = require('gulp-rev');
+var envify = require('envify/custom');
 var browserify = require('browserify'),
   sourceFile = './app/scripts/main.js',
   destFolder = './app/scripts/',
-  destFileName = 'bundle.js';
-
+  destFileName = 'bundle.js',
+  enviornment = 'development';
 
 gulp.task('styles', function () {
   return gulp.src('app/styles/main.scss')
@@ -69,7 +70,11 @@ gulp.task('scripts', function () {
     bundler.on('update', rebundle);
 
     function rebundle() {
-      return bundler.bundle()
+      return bundler
+        .transform(envify({
+          NODE_ENV: enviornment
+        }))
+        .bundle()
         // log errors if they happen
         .on('error', gutil.log.bind(gutil, 'Browserify Error'))
         .pipe(source(destFileName))
@@ -166,7 +171,11 @@ gulp.task('deploy', function() {
     .pipe(ghPages());
 });
 
-gulp.task('build', ['scripts', 'html', 'images', 'data','fonts', 'extras'], function () {
+gulp.task('setenv', function() {
+  enviornment = 'production';
+});
+
+gulp.task('build', ['setenv', 'scripts', 'html', 'images', 'data','fonts', 'extras'], function () {
   return gulp.src('dist/**/*').pipe($.size({title: 'build', gzip: true}));
 });
 
