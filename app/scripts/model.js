@@ -1,7 +1,7 @@
 'use strict';
 var d3 = require('d3-browserify');
 var moment = require('moment');
-
+var extend = require('extend');
 
 function Model(data_url, callback) {
   var weather_data;
@@ -23,7 +23,7 @@ Model.prototype.loadData = function (file, callback) {
 };
 
 Model.prototype.parseWeatherData = function (dataset, temp_field, cost_field) {
-  var new_dataset = $.extend(true, [], dataset);
+  var new_dataset = extend(true, [], dataset);
   new_dataset = new_dataset.filter(function(d){ return d.Date !== ''; });
 
   new_dataset.filter(function(d, i) {

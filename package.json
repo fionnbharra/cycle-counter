@@ -10,6 +10,7 @@
     "d3-browserify": "^3.4.12",
     "del": "^1.1.1",
     "envify": "^3.4.0",
+    "extend": "^2.0.1",
     "gulp": "^3.6.0",
     "gulp-cache": "^0.2.2",
     "gulp-csso": "^0.2.6",
