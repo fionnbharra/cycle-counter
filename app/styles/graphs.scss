@@ -15,13 +15,13 @@
 }
 
 circle {
-  stroke: $light-orange;
-  fill: $mid-orange;
+  stroke: $circle-outer;
+  fill: $circle-inner;
   cursor: pointer;
 }
 
 .area {
-  fill:rgba($mid-orange, 0.4);
+  fill:rgba($area, 0.4);
 
   &.AvgTemp {
     // fill: rgba($blue, 0.3);
@@ -30,26 +30,26 @@ circle {
 
 path.bike {
   stroke: white;
-  fill: $light-orange;
+  fill: $bike-graph-line;
 }
 
 .axis {
   text {
     // display: none;
-    fill: $dark-brown;
+    fill: $text;
   }
 }
 
 .axis path,
 .axis line {
     fill: none;
-    stroke: $light-purple;
+    stroke: $axes;
     shape-rendering: crispEdges;
 }
 
 .yaxis path {
   fill: none;
-  stroke: $light-purple;
+  stroke: $axes;
   shape-rendering: crispEdges;
 }
 
@@ -59,27 +59,17 @@ path.bike {
 
 .line {
   fill: none;
-  stroke: $light-brown;
+  stroke: $temp-graph-line;
   stroke-width: 1.5px;
   transition: stroke .2s;
 
   &.totalBikes {
-    stroke: $light-orange;
-
-    &.fader {
-      // stroke: rgba($blue, .2);
-    }
+    stroke: $bike-graph-line;
   }
-
-  &.fader {
-    stroke: rgba($mid-orange, .2);
-  }
-
-
 }
 
 .grid .tick {
-    stroke: rgba($light-orange,1);
+    stroke: $grid;
     opacity: 0.2;
 }
 .grid path {
