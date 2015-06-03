@@ -6,7 +6,7 @@ var Bike = require('./bike');
 function Chart(container, model){
   this.container = container;
   this.model = model;
-  this.margin = {top: 20, right: 10, bottom: 90, left: 5};
+  this.margin = {top: 20, right: 40, bottom: 90, left: 50};
   this.width =  700 - this.margin.left - this.margin.right;
   this.height =  407 - this.margin.top - this.margin.bottom;
   this.svg = this.createSvg({container: this.container});
@@ -46,7 +46,7 @@ Chart.prototype.getXscale = function () {
 };
 
 Chart.prototype.drawGraph = function () {
-  // var grid = this.drawGrid();
+  var grid = this.drawGrid();
   var line2 = this.drawLine(this.dataset, 'apparentTemperatureMax');
   var line1 = this.drawLine(this.dataset, 'totalBikes');
   var area = this.drawArea(this.dataset, 'apparentTemperatureMax');
@@ -55,11 +55,11 @@ Chart.prototype.drawGraph = function () {
   var axes = this.drawAxes();
   var self = this;
   var animated_bike = new Bike('bike.svg', this.svg, line1, 14000);
-  var animated_bike = new Bike('bike_2.svg', this.svg, line2, 21000);
+  // var animated_bike = new Bike('bike_2.svg', this.svg, line2, 21000);
 
   return {
     line1: line1,
-    line2: line2,
+    // line2: line2,
     events: events,
     axes: axes
     // grid: grid
@@ -111,11 +111,14 @@ Chart.prototype.drawGrid = function () {
                   .ticks(5);
 
   var y_lines = this.svg.append('g')
+              .style("stroke-dasharray", ("3, 3"))
               .attr('class', 'grid')
               .attr('transform', 'translate(0 ,0)')
               .call(yAxis1
                 .tickSize(-(this.width), 0, 0)
+
                 .tickFormat('')
+
               );
   return {
     y_lines: y_lines,
@@ -141,21 +144,20 @@ Chart.prototype.drawXAxis = function () {
                 .orient('bottom')
                 .tickFormat(d3.time.format('%x'))
                 .outerTickSize([0])
-                .innerTickSize([0])
+                // .innerTickSize([0])
                 .ticks(5);
 
   this.svg.append('g')
               .attr('class', 'axis xaxis')
               .attr('transform', 'translate(0,' + this.height + ')')
-              .call(xAxis
-              );
-
-  this.svg.selectAll('.axis text')
-    .attr('y', -8)
-    .attr('x', 9)
-    .attr('dy', '.35em')
-    .attr('transform', 'rotate(90)')
-    .style('text-anchor', 'start');
+              .attr('stroke-width', 2)
+              .call(xAxis)
+              .selectAll('text')
+              .attr('y', 0)
+              .attr('x', 9)
+              .attr('dy', '.35em')
+              .attr('transform', 'rotate(90)')
+              .style('text-anchor', 'start');
   return xAxis;
 };
 
@@ -170,7 +172,7 @@ Chart.prototype.drawYAxis = function () {
 
   this.svg.append('g')
               .attr('class', 'axis yaxis')
-              .attr('transform', 'translate(0 , 00)')
+              .attr('transform', 'translate(-50 , 00)')
               .call(yAxis1);
 
   return yAxis1;
@@ -186,8 +188,8 @@ Chart.prototype.drawYAxis2 = function () {
                   .ticks(5);
 
   this.svg.append('g')
-              .attr('class', 'axis yaxis1')
-              .attr('transform', 'translate(' + this.width + ' , 0)')
+              .attr('class', 'axis yaxis')
+              .attr('transform', 'translate(' + (this.width + this.margin.right)  + ' , 0)')
               .call(yAxis2);
 
   return yAxis2;
