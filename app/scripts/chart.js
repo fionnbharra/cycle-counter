@@ -47,14 +47,14 @@ Chart.prototype.getXscale = function () {
 
 Chart.prototype.drawGraph = function () {
   var grid = this.drawGrid();
-  var line2 = this.drawLine(this.dataset, 'apparentTemperatureMax');
-  var line1 = this.drawLine(this.dataset, 'totalBikes');
-  var area = this.drawArea(this.dataset, 'apparentTemperatureMax');
-  var circles = this.drawCircles(this.dataset);
-  var events = this.setEvents( {target: line1} );
   var axes = this.drawAxes();
   var self = this;
-  var animated_bike = new Bike('bike.svg', this.svg, line1, 14000);
+  var line2 = this.drawLine(this.dataset, 'apparentTemperatureMax');
+  var area = this.drawArea(this.dataset, 'apparentTemperatureMax');
+  var line1 = this.drawLine(this.dataset, 'totalBikes');
+  var circles = this.drawCircles(this.dataset);
+  var events = this.setEvents( {target: line1} );
+  // var animated_bike = new Bike('bike.svg', this.svg, line1, 14000);
   // var animated_bike = new Bike('bike_2.svg', this.svg, line2, 21000);
 
   return {
@@ -214,7 +214,7 @@ Chart.prototype.drawArea = function (data, field) {
     .d("nylon")
     .lighter()
     .thicker()
-    .stroke("#92573B");
+    .stroke("#eaeae2");
   this.svg.call(t);
   // Add the filled area
   return this.svg.append('path')
@@ -230,14 +230,14 @@ Chart.prototype.drawCircles = function () {
                     .data(self.dataset)
                     .enter()
                     .append('circle')
-                    .attr('stroke-width', 1)
+                    .attr('stroke-width', 4)
+                    .attr('r', 4)
                     .attr('cy', function(data) {
                       return(self.yScaleBike(data.totalBikes));
                     })
                     .attr('cx', function(data) {
                       return(self.xScale(data.date));
-                    })
-                    .attr('r', 3);
+                    });
   return circles;
 };
 

@@ -29,8 +29,8 @@ circle {
 }
 
 path.bike {
-  stroke: white;
-  fill: $bike-graph-line;
+  stroke:$bike-graph-line;
+  fill:  $body-bg;
 }
 
 .axis {
