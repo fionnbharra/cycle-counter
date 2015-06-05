@@ -50,12 +50,12 @@ Chart.prototype.drawGraph = function () {
   var axes = this.drawAxes();
   var self = this;
   var line2 = this.drawLine(this.dataset, 'apparentTemperatureMax');
+  var animated_bike = new Bike('bike_2.svg', this.svg, line2, 21000);
   var area = this.drawArea(this.dataset, 'apparentTemperatureMax');
   var line1 = this.drawLine(this.dataset, 'totalBikes');
   var circles = this.drawCircles(this.dataset);
   var events = this.setEvents( {target: line1} );
   // var animated_bike = new Bike('bike.svg', this.svg, line1, 14000);
-  // var animated_bike = new Bike('bike_2.svg', this.svg, line2, 21000);
 
   return {
     line1: line1,
@@ -172,7 +172,7 @@ Chart.prototype.drawYAxis = function () {
 
   this.svg.append('g')
               .attr('class', 'axis yaxis')
-              .attr('transform', 'translate(-50 , 00)')
+              .attr('transform', 'translate(-30 , 00)')
               .call(yAxis1);
 
   return yAxis1;
@@ -189,7 +189,7 @@ Chart.prototype.drawYAxis2 = function () {
 
   this.svg.append('g')
               .attr('class', 'axis yaxis')
-              .attr('transform', 'translate(' + (this.width + this.margin.right)  + ' , 0)')
+              .attr('transform', 'translate(' + (this.width + 25)  + ' , 0)')
               .call(yAxis2);
 
   return yAxis2;
@@ -226,12 +226,27 @@ Chart.prototype.drawArea = function (data, field) {
 
 Chart.prototype.drawCircles = function () {
   var self = this;
-  var circles = this.svg.selectAll('circle')
+  var mask_circles = this.svg.selectAll('circle.masker')
                     .data(self.dataset)
                     .enter()
                     .append('circle')
-                    .attr('stroke-width', 4)
-                    .attr('r', 4)
+                    .attr('class', 'masker')
+                    .attr('stroke-width', 5)
+                    .attr('r', 5)
+                    .attr('cy', function(data) {
+                      return(self.yScaleBike(data.totalBikes));
+                    })
+                    .attr('cx', function(data) {
+                      return(self.xScale(data.date));
+                    });
+
+  var circles = this.svg.selectAll('circle.marker')
+                    .data(self.dataset)
+                    .enter()
+                    .append('circle')
+                    .attr('stroke-width', 2)
+                    .attr('r', 3)
+                    .attr('class', 'marker')
                     .attr('cy', function(data) {
                       return(self.yScaleBike(data.totalBikes));
                     })

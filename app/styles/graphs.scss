@@ -20,6 +20,11 @@ circle {
   cursor: pointer;
 }
 
+.masker {
+  stroke: $body-bg;
+  fill: $body-bg;
+}
+
 .area {
   fill:rgba($area, 0.4);
 
@@ -29,8 +34,8 @@ circle {
 }
 
 path.bike {
-  stroke:$bike-graph-line;
-  fill:  $body-bg;
+  stroke: $temp-graph-line;
+  fill:  $temp-graph-line;
 }
 
 .axis {
@@ -55,7 +60,7 @@ path.bike {
 }
 
 .axis text {
-  font-size: 14px;
+  font-size: 8px;
 }
 
 .line {

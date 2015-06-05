@@ -166,7 +166,7 @@ gulp.task('wiredep', function () {
     .pipe(gulp.dest('app'));
 });
 
-gulp.task('deploy', function() {
+gulp.task('deploy', ['build'], function() {
   return gulp.src('./dist/**/*')
     .pipe(ghPages());
 });
