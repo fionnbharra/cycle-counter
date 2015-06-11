@@ -1,0 +1,36 @@
+$toggle-width: 100px;
+
+.toggle {
+  display: block;
+  width: $toggle-width;
+  height: $toggle-width/2;
+  border: 2px solid $axes;
+  border-radius: $toggle-width/2;
+  transition : border 200ms ease;
+  transition : background-color 300ms ease;
+  background-color: white;
+  position: relative;
+  cursor: pointer;
+
+  &:after {
+    display: block;
+    content: '';
+    width: 42px;
+    height: 42px;
+    background-color: $axes;
+    top: 2px;
+    left: 2px;
+    position: absolute;
+    border-radius: 50%;
+    transition : all 200ms ease;
+  }
+
+  &.active {
+    border-color: $area;
+
+    &:after {
+      background-color: $area;
+      left: 52px;
+    }
+  }
+}

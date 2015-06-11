@@ -1,6 +1,7 @@
 /* jshint devel:true */
 var Model = require('./model');
 var Chart = require('./chart');
+var Toggle = require('./toggle');
 
 window.onload = function() {
   var data_path = process.env.NODE_ENV === 'development' ? '../data/data.json' : 'https://fierce-escarpment-5315.herokuapp.com/data.json';
@@ -8,4 +9,6 @@ window.onload = function() {
   new Model(data_path, function(model){
     new Chart('#graph-container', model);
   });
+
+  var toggle = new Toggle('.toggle');
 };
