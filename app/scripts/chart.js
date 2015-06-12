@@ -2,6 +2,14 @@
 var d3 = require('d3-browserify');
 var textures = require('textures/textures');
 var Bike = require('./bike');
+var PubSub = require('pubsub-js');
+
+d3.selection.prototype.moveToFront = function() {
+  return this.each(function(){
+  this.parentNode.appendChild(this);
+  });
+};
+
 
 function Chart(container, model){
   this.container = container;
@@ -15,6 +23,7 @@ function Chart(container, model){
   this.yScaleTemp = this.getTempYscale();
   this.xScale = this.getXscale();
   this.drawGraph({svg: this.svg, model: this.model});
+  this.attachEvents();
 };
 
 Chart.prototype.createSvg = function (options) {
@@ -62,7 +71,7 @@ Chart.prototype.drawGraph = function () {
 
 Chart.prototype.createTempGroup = function(svg) {
   var group = svg.append('g')
-                 .attr('class', 'temp_group ');
+                 .attr('class', 'temp_group data_group ');
   var line = this.drawLine(this.dataset, 'apparentTemperatureMax', group);
   var animated_bike = new Bike('bike_2.svg', group, line, 21000);
   var area = this.drawArea(this.dataset, 'apparentTemperatureMax', group);
@@ -77,7 +86,7 @@ Chart.prototype.createTempGroup = function(svg) {
 
 Chart.prototype.createBikeCountGroup = function(svg) {
   var group = svg.append('g')
-                 .attr('class', 'bike_group active');
+                 .attr('class', 'bike_group data_group active');
   var line = this.drawLine(this.dataset, 'totalBikes',  group);
   var circles = this.drawCircles(this.dataset, group);
   // var events = this.setEvents( {target: line} );
@@ -305,6 +314,12 @@ Chart.prototype.setEvents = function(options) {
   });
 }
 
-
+Chart.prototype.attachEvents = function () {
+  PubSub.subscribe('FINBAR', function (event, message) {
+    d3.selectAll('.data_group').classed("active", function (d, i) {
+      return !d3.select(this).classed("active");
+    });
+  });
+};
 
 module.exports = Chart;
