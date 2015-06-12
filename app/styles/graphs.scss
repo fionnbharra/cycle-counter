@@ -14,33 +14,68 @@
   line-height: 2.4;
 }
 
-circle {
-  stroke: $circle-outer;
-  fill: $circle-inner;
-  cursor: pointer;
+g.active {
+
 }
 
-.masker {
-  stroke: $body-bg;
-  fill: $body-bg;
+g {
+
 }
 
-.area {
-  fill:rgba($area, 0.4);
+.line {
+  fill: none;
+  stroke: $temp-graph-line;
+  stroke-width: 1.5px;
+  transition: stroke .2s;
 
-  &.AvgTemp {
-    // fill: rgba($blue, 0.3);
+  .active & {
+    stroke: $bike-graph-line;
   }
 }
 
-path.bike {
+.area {
+  fill:rgba(#eaeae2, 0.4);
+
+  .active & {
+    fill:rgba($bike-graph-line, 0.4);
+  }
+}
+
+
+circle {
+fill: $circle-inner;
+cursor: pointer;
+stroke: $temp-graph-line;
+
+  .active & {
+    stroke: $circle-outer;
+    fill: $circle-inner;
+  }
+}
+
+circle.masker {
+  stroke: $body-bg;
+  fill: $body-bg;
+
+  .active & {
+    stroke: $body-bg;
+    fill: $body-bg;
+  }
+}
+
+
+
+.bike {
   stroke: $temp-graph-line;
   fill:  $temp-graph-line;
+
+  .active & {
+    stroke: $circle-outer;
+  }
 }
 
 .axis {
   text {
-    // display: none;
     fill: $text;
   }
 }
@@ -63,16 +98,7 @@ path.bike {
   font-size: 8px;
 }
 
-.line {
-  fill: none;
-  stroke: $temp-graph-line;
-  stroke-width: 1.5px;
-  transition: stroke .2s;
 
-  &.totalBikes {
-    stroke: $bike-graph-line;
-  }
-}
 
 .grid .tick {
     stroke: $grid;

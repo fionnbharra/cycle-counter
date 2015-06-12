@@ -48,20 +48,21 @@ Chart.prototype.getXscale = function () {
 Chart.prototype.drawGraph = function () {
   var grid = this.drawGrid();
   var axes = this.drawAxes();
-  var self = this;
 
   var temp_group = this.createTempGroup(this.svg);
   var bike_group = this.createBikeCountGroup(this.svg);
 
   return {
     temp_group: temp_group,
-    bike_group: bike_group
+    bike_group: bike_group,
+    grid: grid,
+    axes: axes
   };
 };
 
 Chart.prototype.createTempGroup = function(svg) {
   var group = svg.append('g')
-                 .attr('class', 'temp_group');
+                 .attr('class', 'temp_group ');
   var line = this.drawLine(this.dataset, 'apparentTemperatureMax', group);
   var animated_bike = new Bike('bike_2.svg', group, line, 21000);
   var area = this.drawArea(this.dataset, 'apparentTemperatureMax', group);
@@ -76,7 +77,7 @@ Chart.prototype.createTempGroup = function(svg) {
 
 Chart.prototype.createBikeCountGroup = function(svg) {
   var group = svg.append('g')
-                 .attr('class', 'bike_group');
+                 .attr('class', 'bike_group active');
   var line = this.drawLine(this.dataset, 'totalBikes',  group);
   var circles = this.drawCircles(this.dataset, group);
   // var events = this.setEvents( {target: line} );
@@ -242,7 +243,7 @@ Chart.prototype.drawArea = function (data, field, group) {
   // Add the filled area
   return group.append('path')
           .datum(data)
-          .style('fill', t.url())
+          // .style('fill', t.url())
           .attr('class', 'area ' + field)
           .attr('d', area);
 };
