@@ -49,21 +49,44 @@ Chart.prototype.drawGraph = function () {
   var grid = this.drawGrid();
   var axes = this.drawAxes();
   var self = this;
-  var line2 = this.drawLine(this.dataset, 'apparentTemperatureMax');
-  var animated_bike = new Bike('bike_2.svg', this.svg, line2, 21000);
-  var area = this.drawArea(this.dataset, 'apparentTemperatureMax');
-  var line1 = this.drawLine(this.dataset, 'totalBikes');
-  var circles = this.drawCircles(this.dataset);
-  var events = this.setEvents( {target: line1} );
-  // var animated_bike = new Bike('bike.svg', this.svg, line1, 14000);
+
+  var temp_group = this.createTempGroup(this.svg);
+  var bike_group = this.createBikeCountGroup(this.svg);
 
   return {
-    line1: line1,
-    // line2: line2,
-    events: events,
-    axes: axes
-    // grid: grid
+    temp_group: temp_group,
+    bike_group: bike_group
   };
+};
+
+Chart.prototype.createTempGroup = function(svg) {
+  var group = svg.append('g')
+                 .attr('class', 'temp_group');
+  var line = this.drawLine(this.dataset, 'apparentTemperatureMax', group);
+  var animated_bike = new Bike('bike_2.svg', group, line, 21000);
+  var area = this.drawArea(this.dataset, 'apparentTemperatureMax', group);
+
+  return {
+    group: group,
+    line: line,
+    animated_bike: animated_bike,
+    area: area
+  }
+};
+
+Chart.prototype.createBikeCountGroup = function(svg) {
+  var group = svg.append('g')
+                 .attr('class', 'bike_group');
+  var line = this.drawLine(this.dataset, 'totalBikes',  group);
+  var circles = this.drawCircles(this.dataset, group);
+  // var events = this.setEvents( {target: line} );
+  // var animated_bike = new Bike('bike.svg', this.svg, line, 14000);
+
+  return {
+    group: group,
+    line: line,
+    circles: circles
+  }
 };
 
 Chart.prototype.createLine = function (field) {
@@ -79,10 +102,10 @@ Chart.prototype.createLine = function (field) {
   return line;
 };
 
-Chart.prototype.drawLine = function (data, field) {
+Chart.prototype.drawLine = function (data, field, group) {
   var line = this.createLine(field);
 
-  return this.svg
+  return group
       .append('path')
       .datum(data)
       .attr('class', 'line ' + field)
@@ -111,7 +134,7 @@ Chart.prototype.drawGrid = function () {
                   .ticks(5);
 
   var y_lines = this.svg.append('g')
-              .style("stroke-dasharray", ("3, 3"))
+              .style('stroke-dasharray', ('3, 3'))
               .attr('class', 'grid')
               .attr('transform', 'translate(0 ,0)')
               .call(yAxis1
@@ -208,26 +231,26 @@ Chart.prototype.createArea = function(field) {
   return area;
 };
 
-Chart.prototype.drawArea = function (data, field) {
+Chart.prototype.drawArea = function (data, field, group) {
   var area = this.createArea(field);
   var t = textures.paths()
-    .d("nylon")
+    .d('nylon')
     .lighter()
     .thicker()
-    .stroke("#eaeae2");
-  this.svg.call(t);
+    .stroke('#eaeae2');
+  group.call(t);
   // Add the filled area
-  return this.svg.append('path')
+  return group.append('path')
           .datum(data)
           .style('fill', t.url())
           .attr('class', 'area ' + field)
           .attr('d', area);
 };
 
-Chart.prototype.drawCircles = function () {
+Chart.prototype.drawCircles = function (dataset, group) {
   var self = this;
-  var mask_circles = this.svg.selectAll('circle.masker')
-                    .data(self.dataset)
+  var mask_circles = group.selectAll('circle.masker')
+                    .data(dataset)
                     .enter()
                     .append('circle')
                     .attr('class', 'masker')
@@ -239,9 +262,8 @@ Chart.prototype.drawCircles = function () {
                     .attr('cx', function(data) {
                       return(self.xScale(data.date));
                     });
-
-  var circles = this.svg.selectAll('circle.marker')
-                    .data(self.dataset)
+  var circles = group.selectAll('circle.marker')
+                    .data(dataset)
                     .enter()
                     .append('circle')
                     .attr('stroke-width', 2)
@@ -253,7 +275,11 @@ Chart.prototype.drawCircles = function () {
                     .attr('cx', function(data) {
                       return(self.xScale(data.date));
                     });
-  return circles;
+
+  return {
+    circles: circles,
+    mask_circles: mask_circles
+  };
 };
 
 Chart.prototype.setEvents = function(options) {
