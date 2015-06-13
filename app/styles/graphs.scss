@@ -77,6 +77,17 @@ circle.masker {
 .axis {
   text {
     fill: $text;
+    opacity: .2;
+
+    .active & {
+      opacity: 1;
+    }
+  }
+}
+
+.xaxis {
+  text {
+    opacity: 1;
   }
 }
 

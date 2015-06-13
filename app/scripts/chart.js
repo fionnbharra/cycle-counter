@@ -68,6 +68,7 @@ Chart.prototype.createTempGroup = function(svg) {
   var line = this.drawLine(this.dataset, 'apparentTemperatureMax', group);
   var animated_bike = new Bike('bike_2.svg', group, line, 21000);
   var area = this.drawArea(this.dataset, 'apparentTemperatureMax', group);
+  var axes = this.drawYAxis2(group);
 
   return {
     group: group,
@@ -82,6 +83,7 @@ Chart.prototype.createBikeCountGroup = function(svg) {
                  .attr('class', 'bike_group data_group active');
   var line = this.drawLine(this.dataset, 'totalBikes',  group);
   var circles = this.drawCircles(this.dataset, group);
+  var axes = this.drawYAxis(group);
   // var events = this.setEvents( {target: line} );
   // var animated_bike = new Bike('bike.svg', this.svg, line, 14000);
 
@@ -154,13 +156,9 @@ Chart.prototype.drawGrid = function () {
 
 Chart.prototype.drawAxes = function () {
   var x_axis = this.drawXAxis();
-  var y_axis1 = this.drawYAxis();
-  var y_axis2 = this.drawYAxis2();
 
   return {
     x_axis: x_axis,
-    y_axis1: y_axis1,
-    y_axis2: y_axis2
   };
 };
 
@@ -187,7 +185,7 @@ Chart.prototype.drawXAxis = function () {
   return xAxis;
 };
 
-Chart.prototype.drawYAxis = function () {
+Chart.prototype.drawYAxis = function (container) {
   var yAxis1 = d3.svg.axis()
                   .scale(this.yScaleBike)
                   .orient('right')
@@ -196,7 +194,7 @@ Chart.prototype.drawYAxis = function () {
                   .innerTickSize([0])
                   .ticks(5);
 
-  this.svg.append('g')
+  container.append('g')
               .attr('class', 'axis yaxis')
               .attr('transform', 'translate(-30 , 00)')
               .call(yAxis1);
@@ -204,7 +202,7 @@ Chart.prototype.drawYAxis = function () {
   return yAxis1;
 };
 
-Chart.prototype.drawYAxis2 = function () {
+Chart.prototype.drawYAxis2 = function (container) {
   var yAxis2 = d3.svg.axis()
                   .scale(this.yScaleTemp)
                   .orient('left')
@@ -213,7 +211,7 @@ Chart.prototype.drawYAxis2 = function () {
                   .innerTickSize([0])
                   .ticks(5);
 
-  this.svg.append('g')
+  container.append('g')
               .attr('class', 'axis yaxis')
               .attr('transform', 'translate(' + (this.width + 25)  + ' , 0)')
               .call(yAxis2);
