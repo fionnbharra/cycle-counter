@@ -308,8 +308,9 @@ Chart.prototype.setEvents = function(options) {
 }
 
 Chart.prototype.attachEvents = function () {
-  PubSub.subscribe('FINBAR', function (event, message) {
+  PubSub.subscribe('TOGGLE', function (event, message) {
     d3.selectAll('.data_group').classed("active", function (d, i) {
+      if(!d3.select(this).classed("active")) d3.select(this).moveToFront();
       return !d3.select(this).classed("active");
     });
   });

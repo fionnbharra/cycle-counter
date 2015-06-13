@@ -6,7 +6,7 @@ function Toggle(elem) {
   var toggle  = d3.select(elem);
   toggle.on('click', function() {
     toggle.classed('active', !toggle.classed('active'));
-    PubSub.publish( 'FINBAR', 'hello world!' );
+    PubSub.publish('TOGGLE');
   });
 }
 
