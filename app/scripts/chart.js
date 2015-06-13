@@ -1,15 +1,8 @@
 'use strict';
-var d3 = require('d3-browserify');
+var d3 = require('./d3-extended');
 var textures = require('textures/textures');
 var Bike = require('./bike');
 var PubSub = require('pubsub-js');
-
-d3.selection.prototype.moveToFront = function() {
-  return this.each(function(){
-  this.parentNode.appendChild(this);
-  });
-};
-
 
 function Chart(container, model){
   this.container = container;
