@@ -1,0 +1,19 @@
+@keyframes pulsate {
+    0% {-webkit-transform: scale(0.5, 0.5); opacity: 0.0;}
+    50% {opacity: 1.0;}
+    100% {-webkit-transform: scale(1, 1); opacity: 0.0;}
+}
+
+.loader {
+  display: none;
+
+  .loading & {
+    animation: pulsate 2s ease-out;
+    animation-iteration-count: infinite;
+    opacity: 0.0;
+    width: 65px;
+    display: block;
+    margin: 0 auto;
+    margin-top: 50px;
+  }
+}
