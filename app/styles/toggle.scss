@@ -1,10 +1,11 @@
-$toggle-width: 100px;
+$toggle-width: 50px;
+$border-width: 2px;
 
 .toggle {
   display: block;
   width: $toggle-width;
   height: $toggle-width/2;
-  border: 2px solid $axes;
+  border: $border-width solid $axes;
   border-radius: $toggle-width/2;
   transition : border 200ms ease;
   transition : background-color 300ms ease;
@@ -15,11 +16,11 @@ $toggle-width: 100px;
   &:after {
     display: block;
     content: '';
-    width: 42px;
-    height: 42px;
+    width: ($toggle-width/2) - ($border-width * 4);
+    height: ($toggle-width/2) - ($border-width * 4);
     background-color: $axes;
-    top: 2px;
-    left: 2px;
+    top: $border-width;
+    left: $border-width;
     position: absolute;
     border-radius: 50%;
     transition : all 200ms ease;
@@ -30,7 +31,11 @@ $toggle-width: 100px;
 
     &:after {
       background-color: $area;
-      left: 52px;
+      left: $toggle-width/2 + $border-width/2;
     }
+  }
+
+  .loading & {
+    display: none;
   }
 }
