@@ -17,3 +17,9 @@
     margin-top: 50px;
   }
 }
+
+.hidden-until-loaded {
+  .loading & {
+    display: none;
+  }
+}
