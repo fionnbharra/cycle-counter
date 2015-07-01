@@ -3,6 +3,7 @@ var Model = require('./model');
 var Chart = require('./chart');
 var Toggle = require('./toggle');
 var Loader = require('./loader');
+var TextReport = require('./text-report');
 
 window.onload = function() {
   'use strict';
@@ -12,6 +13,7 @@ window.onload = function() {
   new Model(data_path, function(model){
     loader.complete();
     new Toggle('.toggle');
+    new TextReport('#text-container', model);
     new Chart('#graph-container', model);
   });
 
