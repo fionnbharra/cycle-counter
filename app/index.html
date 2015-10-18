@@ -24,7 +24,11 @@
   <nav class="navbar navbar-default">
     <div class="container">
       <div class="navbar-header">
-        <h5>Bicycles on Goldsmiths Row</h5>
+        <div class="row">
+          <div class="col-md-12" id="">
+            <h5>Bicycles on Goldsmiths Row</h5>
+          </div>
+        </div>
       </div>
     </div>
   </nav>
@@ -33,18 +37,20 @@
         <div class="col-md-12" id="">
           <div id="text-container" class="hidden-until-loaded">
             <!-- TODO: swap for templates -->
-            <h1><small>Yesterday</small> <span id="number-of-bikes">xxxx</span> <small>bikes passed through Goldsmiths Row.</small></h1>
-            <h1><small>It was </small><span id="temperature">xxxx</span> <small>degrees.</small></h1>
+            <h1><small id="date">Yesterday</small> <span id="number-of-bikes">xxxx</span> <small>bikes passed through Goldsmiths Row.</small></h1>
+            <h1><small>It was a maximum of </small><span id="temperature">xxxx</span> <small>degrees.</small></h1>
           </div>
           <div id="graph-container" class="wrap">
             <img src="images/bike.svg" alt="loading" class="loader">
           </div>
         </div>
       </div>
-      <div class="wrap">
+      <div class="wrap toggle-wrap">
+        <span class="toggle-label active">Number of bikes</span>
         <div class="toggle">
 
         </div>
+        <span class="toggle-label">Temperature</span>
       </div>
     </div>
     <!-- build:js scripts/vendor.js -->

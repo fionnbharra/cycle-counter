@@ -84,7 +84,7 @@ Chart.prototype.createBikeCountGroup = function(svg) {
   var line = this.drawLine(this.dataset, 'totalBikes',  group);
   var circles = this.drawCircles(this.dataset, group);
   var axes = this.drawYAxis(group);
-  // var events = this.setEvents( {target: line} );
+  var events = this.setEvents( {target: circles.circles} );
   // var animated_bike = new Bike('bike.svg', this.svg, line, 14000);
 
   return {
@@ -284,8 +284,10 @@ Chart.prototype.drawCircles = function (dataset, group) {
 };
 
 Chart.prototype.setEvents = function(options) {
+
   var self = this;
   var bisectDate = d3.bisector(function(d) { return d.date; }).left;
+
   options.target.on('click', function() {
     var data = self.dataset;
     var mouse = d3.mouse(this);
@@ -298,6 +300,8 @@ Chart.prototype.setEvents = function(options) {
     var d = mouseDate - d0.date > d1.date - mouseDate ? d1 : d0;
     var x = self.xScale(d.date);
     var y = self.yScaleBike(d.totalBikes);
+    PubSub.publish('GRAPHCLICK', { date: d.date.format("dddd, MMMM Do YYYY"), numberOfBikes: d.totalBikes, temperature: d.temperatureMax });
+
     return {
       x: x,
       y: y

@@ -2,7 +2,7 @@ $toggle-width: 50px;
 $border-width: 2px;
 
 .toggle {
-  display: block;
+  display: inline-block;
   width: $toggle-width;
   height: $toggle-width/2;
   border: $border-width solid $axes;
@@ -34,8 +34,24 @@ $border-width: 2px;
       left: $toggle-width/2 + $border-width/2;
     }
   }
+}
+
+.toggle-wrap {
+  float: right;
 
   .loading & {
     display: none;
+  }
+}
+
+.toggle-label {
+  position: relative;
+  top: -7px;
+  margin: 10px;
+  opacity: .4;
+  transition : opacity 200ms ease;
+
+  &.active {
+    opacity: 1;
   }
 }
