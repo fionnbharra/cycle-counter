@@ -7,8 +7,8 @@ var PubSub = require('pubsub-js');
 function Chart(container, model){
   this.container = container;
   this.model = model;
-  this.margin = {top: 20, right: 40, bottom: 90, left: 50};
-  this.width =  700 - this.margin.left - this.margin.right;
+  this.margin = {top: 20, right: 40, bottom: 90, left: 30};
+  this.width =  940 - this.margin.left - this.margin.right;
   this.height =  407 - this.margin.top - this.margin.bottom;
   this.svg = this.createSvg({container: this.container});
   this.dataset = model.dataset;
@@ -66,7 +66,7 @@ Chart.prototype.createTempGroup = function(svg) {
   var group = svg.append('g')
                  .attr('class', 'temp_group data_group ');
   var line = this.drawLine(this.dataset, 'apparentTemperatureMax', group);
-  var animated_bike = new Bike('bike_2.svg', group, line, 21000);
+  var animated_bike = new Bike('bike_2.svg', group, line, 55000);
   var area = this.drawArea(this.dataset, 'apparentTemperatureMax', group);
   var axes = this.drawYAxis2(group);
 

@@ -5,11 +5,15 @@ body, html {
 }
 
 .wrap {
-  width: 700px;
+  overflow: scroll;
   margin: 0 auto;
   display: block;
 }
 
 .navbar-brand {
   height: auto;
+}
+
+.navbar-header h5 {
+  line-height: 35px; 
 }
