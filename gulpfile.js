@@ -18,6 +18,7 @@ var browserify = require('browserify'),
   destFolder = './app/scripts/',
   destFileName = 'bundle.js',
   enviornment = 'development';
+var babel = require('babelify');
 
 gulp.task('styles', function () {
   return gulp.src('app/styles/main.scss')
@@ -74,6 +75,7 @@ gulp.task('scripts', function () {
         .transform(envify({
           NODE_ENV: enviornment
         }))
+        .transform('babelify', {presets: ['es2015']})
         .bundle()
         // log errors if they happen
         .on('error', gutil.log.bind(gutil, 'Browserify Error'))
