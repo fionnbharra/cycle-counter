@@ -3,34 +3,35 @@ var d3 = require('d3-browserify');
 var PubSub = require('pubsub-js');
 
 function TextReport(container, model) {
-  var self = this;
-  var yesterdaysData = this.parseData(model);
-  this.writeReport(container, yesterdaysData);
-
-  PubSub.subscribe('GRAPHCLICK', function (event, data) {
-    data.date = "On " + data.date;
-    self.writeReport(container, data);
-  });
+  this.numberContainer = d3.select('#number-of-bikes', container);
+  this.temperatureContainer = d3.select('#temperature', container);
+  this.dateContainer = d3.select('#date', container);
+  this.writeReport(container, this.yesterdaysData(model));
+  this.wireEvents(container);
 }
 
-TextReport.prototype.parseData = function(model) {
+TextReport.prototype.wireEvents = function(container) {
+  PubSub.subscribe('GRAPHCLICK', (event, data) => {
+    data.date = `On ${data.date}`;
+    this.writeReport(container, data);
+  });
+};
+
+TextReport.prototype.yesterdaysData = function(model) {
   var dataset = model.dataset;
   var lastItemIndex = dataset.length - 1;
 
   return {
-    date: "Yesterday",
+    date: 'Yesterday',
     numberOfBikes: dataset[lastItemIndex].totalBikes,
     temperature: dataset[lastItemIndex].temperatureMax
-  }
+  };
 };
 
 TextReport.prototype.writeReport = function(container, data) {
-    var numberContainer = d3.select('#number-of-bikes', container);
-    var temperatureContainer = d3.select('#temperature', container);
-    var dateContainer = d3.select('#date', container);
-    numberContainer.html(data.numberOfBikes);
-    temperatureContainer.html(data.temperature);
-    dateContainer.html(data.date);
+    this.numberContainer.html(data.numberOfBikes);
+    this.temperatureContainer.html(data.temperature);
+    this.dateContainer.html(data.date);
 };
 
 module.exports = TextReport;

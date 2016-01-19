@@ -17,16 +17,15 @@ function Chart(container, model){
   this.xScale = this.getXscale();
   this.drawGraph({svg: this.svg, model: this.model});
   this.attachEvents();
-};
+}
 
 Chart.prototype.createSvg = function (options) {
-  var svg = d3.select(options.container)
-              .append('svg')
-              .attr('width', this.width  + this.margin.left + this.margin.right)
-              .attr('height', this.height + this.margin.top + this.margin.bottom)
-              .append('g')
-              .attr('transform', 'translate(' + this.margin.left + ',' + this.margin.top + ')');
-  return svg;
+  return d3.select(options.container)
+          .append('svg')
+          .attr('width', this.width  + this.margin.left + this.margin.right)
+          .attr('height', this.height + this.margin.top + this.margin.bottom)
+          .append('g')
+          .attr('transform', 'translate(' + this.margin.left + ',' + this.margin.top + ')');
 };
 
 Chart.prototype.getBikeYscale = function () {
@@ -43,7 +42,7 @@ Chart.prototype.getTempYscale = function () {
 
 Chart.prototype.getXscale = function () {
   return d3.time.scale()
-            .domain(this.model.getExtentX())
+            .domain(this.model.getExtentDate())
             .range([0, this.width]);
 };
 
@@ -55,10 +54,10 @@ Chart.prototype.drawGraph = function () {
   var bike_group = this.createBikeCountGroup(this.svg);
 
   return {
-    temp_group: temp_group,
-    bike_group: bike_group,
-    grid: grid,
-    axes: axes
+    temp_group,
+    bike_group,
+    grid,
+    axes
   };
 };
 
@@ -71,11 +70,12 @@ Chart.prototype.createTempGroup = function(svg) {
   var axes = this.drawYAxis2(group);
 
   return {
-    group: group,
-    line: line,
-    animated_bike: animated_bike,
-    area: area
-  }
+    group,
+    line,
+    animated_bike,
+    area,
+    axes
+  };
 };
 
 Chart.prototype.createBikeCountGroup = function(svg) {
@@ -85,13 +85,14 @@ Chart.prototype.createBikeCountGroup = function(svg) {
   var circles = this.drawCircles(this.dataset, group);
   var axes = this.drawYAxis(group);
   var events = this.setEvents( {target: circles.circles} );
-  // var animated_bike = new Bike('bike.svg', this.svg, line, 14000);
 
   return {
-    group: group,
-    line: line,
-    circles: circles
-  }
+    group,
+    line,
+    circles,
+    axes,
+    events
+  };
 };
 
 Chart.prototype.createLine = function (field) {
@@ -114,6 +115,7 @@ Chart.prototype.drawLine = function (data, field, group) {
       .append('path')
       .datum(data)
       .attr('class', 'line ' + field)
+      .attr('clip-path', 'url(#clip)')
       .attr('d', line);
 };
 
@@ -278,8 +280,8 @@ Chart.prototype.drawCircles = function (dataset, group) {
                     });
 
   return {
-    circles: circles,
-    mask_circles: mask_circles
+    circles,
+    mask_circles
   };
 };
 
@@ -300,20 +302,22 @@ Chart.prototype.setEvents = function(options) {
     var d = mouseDate - d0.date > d1.date - mouseDate ? d1 : d0;
     var x = self.xScale(d.date);
     var y = self.yScaleBike(d.totalBikes);
-    PubSub.publish('GRAPHCLICK', { date: d.date.format("dddd, MMMM Do YYYY"), numberOfBikes: d.totalBikes, temperature: d.temperatureMax });
+    PubSub.publish('GRAPHCLICK', { date: d.date.format('dddd, MMMM Do YYYY'), numberOfBikes: d.totalBikes, temperature: d.temperatureMax });
 
     return {
-      x: x,
-      y: y
+      x,
+      y
     };
   });
-}
+};
 
 Chart.prototype.attachEvents = function () {
-  PubSub.subscribe('TOGGLE', function (event, message) {
-    d3.selectAll('.data_group').classed("active", function (d, i) {
-      if(!d3.select(this).classed("active")) d3.select(this).moveToFront();
-      return !d3.select(this).classed("active");
+  PubSub.subscribe('TOGGLE', function () {
+    d3.selectAll('.data_group').classed('active', function () {
+      if (!d3.select(this).classed('active')) {
+        d3.select(this).moveToFront();
+      }
+      return !d3.select(this).classed('active');
     });
   });
 };

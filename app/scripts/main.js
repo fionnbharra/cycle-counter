@@ -10,7 +10,7 @@ window.onload = function() {
   var data_path = process.env.NODE_ENV === 'development' ? '../data/data.json' : 'https://fierce-escarpment-5315.herokuapp.com/data.json';
   var loader = new Loader();
 
-  new Model(data_path, function(model){
+  new Model(data_path, model => {
     loader.complete();
     new Toggle('.toggle');
     new TextReport('#text-container', model);
