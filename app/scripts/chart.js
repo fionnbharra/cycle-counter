@@ -12,9 +12,6 @@ function Chart(container, model){
   this.height =  407 - this.margin.top - this.margin.bottom;
   this.svg = this.createSvg({container: this.container});
   this.dataset = model.dataset;
-  this.yScaleBike = this.getBikeYscale();
-  this.yScaleTemp = this.getTempYscale();
-  this.xScale = this.getXscale();
   this.drawGraph({svg: this.svg, model: this.model});
   this.attachEvents();
 }
@@ -49,7 +46,6 @@ Chart.prototype.getXscale = function () {
 Chart.prototype.drawGraph = function () {
   var grid = this.drawGrid();
   var axes = this.drawAxes();
-
   var temp_group = this.createTempGroup(this.svg);
   var bike_group = this.createBikeCountGroup(this.svg);
 
@@ -100,7 +96,7 @@ Chart.prototype.createLine = function (field) {
   var line = d3
       .svg.line()
       .x(function(d) {
-        return self.xScale(d.date); })
+        return self.getXscale()(d.date); })
       .y(function(d) {
        return self.determineScaleType(field)(d[field]); })
       .interpolate('monotone');
@@ -122,21 +118,22 @@ Chart.prototype.drawLine = function (data, field, group) {
 Chart.prototype.determineScaleType = function (field) {
   switch (field) {
     case 'totalBikes':
-      return this.yScaleBike;
+      return this.getBikeYscale();
     case 'apparentTemperatureMax':
-      return this.yScaleTemp;
+      return this.getTempYscale();
   }
 };
 
 Chart.prototype.drawGrid = function () {
   var xAxis = d3.svg.axis()
-                .scale(this.xScale)
+                .scale(this.getXscale())
                 .orient('bottom')
                 .tickFormat(d3.time.format('%b %Y'))
                 .ticks(10);
 
+
   var yAxis1 = d3.svg.axis()
-                  .scale(this.yScaleBike)
+                  .scale(this.getBikeYscale())
                   .orient('left')
                   .ticks(5);
 
@@ -166,7 +163,7 @@ Chart.prototype.drawAxes = function () {
 
 Chart.prototype.drawXAxis = function () {
   var xAxis = d3.svg.axis()
-                .scale(this.xScale)
+                .scale(this.getXscale())
                 .orient('bottom')
                 .tickFormat(d3.time.format('%x'))
                 .outerTickSize([0])
@@ -189,7 +186,7 @@ Chart.prototype.drawXAxis = function () {
 
 Chart.prototype.drawYAxis = function (container) {
   var yAxis1 = d3.svg.axis()
-                  .scale(this.yScaleBike)
+                  .scale(this.getBikeYscale())
                   .orient('right')
                   .tickFormat(function(d) { return d; })
                   .outerTickSize([0])
@@ -206,7 +203,7 @@ Chart.prototype.drawYAxis = function (container) {
 
 Chart.prototype.drawYAxis2 = function (container) {
   var yAxis2 = d3.svg.axis()
-                  .scale(this.yScaleTemp)
+                  .scale(this.getTempYscale())
                   .orient('left')
                   .outerTickSize([0])
                   .tickFormat(function(d) { return d + '°'; })
@@ -227,9 +224,9 @@ Chart.prototype.createArea = function(field) {
   var area = d3.svg
       .area()
       .interpolate('monotone')
-      .x(function(d) { return self.xScale(d.date); })
+      .x(function(d) { return self.getXscale()(d.date); })
       .y0(this.height)
-      .y1(function(d) { return self.yScaleTemp(d[field]); });
+      .y1(function(d) { return self.getTempYscale()(d[field]); });
 
   return area;
 };
@@ -260,10 +257,10 @@ Chart.prototype.drawCircles = function (dataset, group) {
                     .attr('stroke-width', 5)
                     .attr('r', 5)
                     .attr('cy', function(data) {
-                      return(self.yScaleBike(data.totalBikes));
+                      return(self.getBikeYscale()(data.totalBikes));
                     })
                     .attr('cx', function(data) {
-                      return(self.xScale(data.date));
+                      return(self.getXscale()(data.date));
                     });
   var circles = group.selectAll('circle.marker')
                     .data(dataset)
@@ -273,10 +270,10 @@ Chart.prototype.drawCircles = function (dataset, group) {
                     .attr('r', 3)
                     .attr('class', 'marker')
                     .attr('cy', function(data) {
-                      return(self.yScaleBike(data.totalBikes));
+                      return(self.getBikeYscale()(data.totalBikes));
                     })
                     .attr('cx', function(data) {
-                      return(self.xScale(data.date));
+                      return(self.getXscale()(data.date));
                     });
 
   return {
@@ -293,15 +290,15 @@ Chart.prototype.setEvents = function(options) {
   options.target.on('click', function() {
     var data = self.dataset;
     var mouse = d3.mouse(this);
-    var mouseDate = self.xScale.invert(mouse[0]);
+    var mouseDate = self.getXscale().invert(mouse[0]);
     var i = bisectDate(data, mouseDate); // returns the index to the current data item
     var d0 = data[i - 1];
     var d1 = data[i];
 
      // work out which date value is closest to the mouse
     var d = mouseDate - d0.date > d1.date - mouseDate ? d1 : d0;
-    var x = self.xScale(d.date);
-    var y = self.yScaleBike(d.totalBikes);
+    var x = self.getXscale()(d.date);
+    var y = self.getBikeYscale(d.totalBikes);
     PubSub.publish('GRAPHCLICK', { date: d.date.format('dddd, MMMM Do YYYY'), numberOfBikes: d.totalBikes, temperature: d.temperatureMax });
 
     return {
