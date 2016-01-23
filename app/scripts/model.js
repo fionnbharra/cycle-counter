@@ -25,16 +25,4 @@ Model.prototype.getExtent = function (field) {
   return d3.extent(this.dataset, d => d[field]);
 };
 
-Model.prototype.getExtentTemp = function () {
-  return this.getExtent('apparentTemperatureMax');
-};
-
-Model.prototype.getExtentBikes = function () {
-  return this.getExtent('totalBikes');
-};
-
-Model.prototype.getExtentDate = function () {
-  return this.getExtent('date');
-};
-
 module.exports = Model;

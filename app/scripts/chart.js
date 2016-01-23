@@ -25,21 +25,15 @@ Chart.prototype.createSvg = function (options) {
           .attr('transform', 'translate(' + this.margin.left + ',' + this.margin.top + ')');
 };
 
-Chart.prototype.getBikeYscale = function () {
+Chart.prototype.getYscale = function (field) {
   return d3.scale.linear()
-            .domain(this.model.getExtentBikes())
-            .range([this.height, 0]);
-};
-
-Chart.prototype.getTempYscale = function () {
-  return d3.scale.linear()
-            .domain(this.model.getExtentTemp())
+            .domain(this.model.getExtent(field))
             .range([this.height, 0]);
 };
 
 Chart.prototype.getXscale = function () {
   return d3.time.scale()
-            .domain(this.model.getExtentDate())
+            .domain(this.model.getExtent('date'))
             .range([0, this.width]);
 };
 
@@ -118,9 +112,9 @@ Chart.prototype.drawLine = function (data, field, group) {
 Chart.prototype.determineScaleType = function (field) {
   switch (field) {
     case 'totalBikes':
-      return this.getBikeYscale();
+      return this.getYscale('totalBikes');
     case 'apparentTemperatureMax':
-      return this.getTempYscale();
+      return this.getYscale('apparentTemperatureMax');
   }
 };
 
@@ -133,7 +127,7 @@ Chart.prototype.drawGrid = function () {
 
 
   var yAxis1 = d3.svg.axis()
-                  .scale(this.getBikeYscale())
+                  .scale(this.getYscale('totalBikes'))
                   .orient('left')
                   .ticks(5);
 
@@ -186,7 +180,7 @@ Chart.prototype.drawXAxis = function () {
 
 Chart.prototype.drawYAxis = function (container) {
   var yAxis1 = d3.svg.axis()
-                  .scale(this.getBikeYscale())
+                  .scale(this.getYscale('totalBikes'))
                   .orient('right')
                   .tickFormat(function(d) { return d; })
                   .outerTickSize([0])
@@ -203,7 +197,7 @@ Chart.prototype.drawYAxis = function (container) {
 
 Chart.prototype.drawYAxis2 = function (container) {
   var yAxis2 = d3.svg.axis()
-                  .scale(this.getTempYscale())
+                  .scale(this.getYscale('apparentTemperatureMax'))
                   .orient('left')
                   .outerTickSize([0])
                   .tickFormat(function(d) { return d + '°'; })
@@ -226,7 +220,7 @@ Chart.prototype.createArea = function(field) {
       .interpolate('monotone')
       .x(function(d) { return self.getXscale()(d.date); })
       .y0(this.height)
-      .y1(function(d) { return self.getTempYscale()(d[field]); });
+      .y1(function(d) { return self.getYscale('apparentTemperatureMax')(d[field]); });
 
   return area;
 };
@@ -257,7 +251,7 @@ Chart.prototype.drawCircles = function (dataset, group) {
                     .attr('stroke-width', 5)
                     .attr('r', 5)
                     .attr('cy', function(data) {
-                      return(self.getBikeYscale()(data.totalBikes));
+                      return(self.getYscale('totalBikes')(data.totalBikes));
                     })
                     .attr('cx', function(data) {
                       return(self.getXscale()(data.date));
@@ -270,7 +264,7 @@ Chart.prototype.drawCircles = function (dataset, group) {
                     .attr('r', 3)
                     .attr('class', 'marker')
                     .attr('cy', function(data) {
-                      return(self.getBikeYscale()(data.totalBikes));
+                      return(self.getYscale('totalBikes')(data.totalBikes));
                     })
                     .attr('cx', function(data) {
                       return(self.getXscale()(data.date));
@@ -298,7 +292,7 @@ Chart.prototype.setEvents = function(options) {
      // work out which date value is closest to the mouse
     var d = mouseDate - d0.date > d1.date - mouseDate ? d1 : d0;
     var x = self.getXscale()(d.date);
-    var y = self.getBikeYscale(d.totalBikes);
+    var y = self.getYscale('totalBikes')(d.totalBikes);
     PubSub.publish('GRAPHCLICK', { date: d.date.format('dddd, MMMM Do YYYY'), numberOfBikes: d.totalBikes, temperature: d.temperatureMax });
 
     return {
