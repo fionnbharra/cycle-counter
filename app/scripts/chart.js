@@ -43,11 +43,10 @@ Chart.prototype.drawGraph = function () {
   var axes = this.drawAxes();
   // var temp_group = this.createTempGroup(this.svg);
   var bike_group = new BikeGroup(this.svg, this.model, this.getXscale(), this.getYscale('totalBikes'));
-  // var bike_group = this.createBikeCountGroup(this.svg);
 
   return {
     // temp_group,
-    // bike_group,
+    bike_group,
     grid,
     axes
   };
@@ -68,46 +67,6 @@ Chart.prototype.createTempGroup = function(svg) {
     area,
     axes
   };
-};
-
-Chart.prototype.createBikeCountGroup = function(svg) {
-  var group = svg.append('g')
-                 .attr('class', 'bike_group data_group active');
-  var line = this.drawLine(this.dataset, 'totalBikes',  group);
-  var circles = this.drawCircles(this.dataset, group);
-  var axes = this.drawYAxis(group);
-  var events = this.setEvents( {target: circles.circles} );
-
-  return {
-    group,
-    line,
-    circles,
-    axes,
-    events
-  };
-};
-
-Chart.prototype.createLine = function (field) {
-  return d3
-        .svg.line()
-        .x((d) => {
-          return this.getXscale()(d.date);
-        })
-        .y((d) => {
-         return this.getYscale(field)(d[field]);
-        })
-        .interpolate('monotone');
-};
-
-Chart.prototype.drawLine = function (data, field, group) {
-  var line = this.createLine(field);
-
-  return group
-      .append('path')
-      .datum(data)
-      .attr('class', 'line ' + field)
-      .attr('clip-path', 'url(#clip)')
-      .attr('d', line);
 };
 
 Chart.prototype.drawGrid = function () {
@@ -167,23 +126,6 @@ Chart.prototype.drawXAxis = function () {
   return xAxis;
 };
 
-Chart.prototype.drawYAxis = function (container) {
-  var yAxis1 = d3.svg.axis()
-                  .scale(this.getYscale('totalBikes'))
-                  .orient('right')
-                  .tickFormat(function(d) { return d; })
-                  .outerTickSize([0])
-                  .innerTickSize([0])
-                  .ticks(5);
-
-  container.append('g')
-              .attr('class', 'axis yaxis')
-              .attr('transform', 'translate(-30 , 00)')
-              .call(yAxis1);
-
-  return yAxis1;
-};
-
 Chart.prototype.drawYAxis2 = function (container) {
   var yAxis2 = d3.svg.axis()
                   .scale(this.getYscale('apparentTemperatureMax'))
@@ -228,32 +170,6 @@ Chart.prototype.drawArea = function (data, field, group) {
           // .style('fill', t.url())
           .attr('class', 'area ' + field)
           .attr('d', area);
-};
-
-Chart.prototype.setEvents = function(options) {
-
-  var self = this;
-  var bisectDate = d3.bisector(function(d) { return d.date; }).left;
-
-  options.target.on('click', function() {
-    var data = self.dataset;
-    var mouse = d3.mouse(this);
-    var mouseDate = self.getXscale().invert(mouse[0]);
-    var i = bisectDate(data, mouseDate); // returns the index to the current data item
-    var d0 = data[i - 1];
-    var d1 = data[i];
-
-     // work out which date value is closest to the mouse
-    var d = mouseDate - d0.date > d1.date - mouseDate ? d1 : d0;
-    var x = self.getXscale()(d.date);
-    var y = self.getYscale('totalBikes')(d.totalBikes);
-    PubSub.publish('GRAPHCLICK', { date: d.date.format('dddd, MMMM Do YYYY'), numberOfBikes: d.totalBikes, temperature: d.temperatureMax });
-
-    return {
-      x,
-      y
-    };
-  });
 };
 
 Chart.prototype.attachEvents = function () {

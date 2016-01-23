@@ -13,8 +13,8 @@ const circles = [
 ];
 
 module.exports = (dataset, field, group, xScale, yScale) => {
-  circles.map((c) => {
-    group.selectAll(`circle.${c.cssClass}`)
+   return circles.map((c) => {
+    return group.selectAll(`circle.${c.cssClass}`)
           .data(dataset)
           .enter()
           .append('circle')
