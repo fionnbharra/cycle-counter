@@ -2,6 +2,7 @@
 var d3 = require('./d3-extended');
 var textures = require('textures/textures');
 var Bike = require('./bike');
+var BikeGroup = require('./bike-group');
 var PubSub = require('pubsub-js');
 
 function Chart(container, model){
@@ -40,12 +41,13 @@ Chart.prototype.getXscale = function () {
 Chart.prototype.drawGraph = function () {
   var grid = this.drawGrid();
   var axes = this.drawAxes();
-  var temp_group = this.createTempGroup(this.svg);
-  var bike_group = this.createBikeCountGroup(this.svg);
+  // var temp_group = this.createTempGroup(this.svg);
+  var bike_group = new BikeGroup(this.svg, this.model, this.getXscale(), this.getYscale('totalBikes'));
+  // var bike_group = this.createBikeCountGroup(this.svg);
 
   return {
-    temp_group,
-    bike_group,
+    // temp_group,
+    // bike_group,
     grid,
     axes
   };
@@ -86,16 +88,15 @@ Chart.prototype.createBikeCountGroup = function(svg) {
 };
 
 Chart.prototype.createLine = function (field) {
-  var self = this;
-  var line = d3
-      .svg.line()
-      .x(function(d) {
-        return self.getXscale()(d.date); })
-      .y(function(d) {
-       return self.determineScaleType(field)(d[field]); })
-      .interpolate('monotone');
-
-  return line;
+  return d3
+        .svg.line()
+        .x((d) => {
+          return this.getXscale()(d.date);
+        })
+        .y((d) => {
+         return this.getYscale(field)(d[field]);
+        })
+        .interpolate('monotone');
 };
 
 Chart.prototype.drawLine = function (data, field, group) {
@@ -109,22 +110,12 @@ Chart.prototype.drawLine = function (data, field, group) {
       .attr('d', line);
 };
 
-Chart.prototype.determineScaleType = function (field) {
-  switch (field) {
-    case 'totalBikes':
-      return this.getYscale('totalBikes');
-    case 'apparentTemperatureMax':
-      return this.getYscale('apparentTemperatureMax');
-  }
-};
-
 Chart.prototype.drawGrid = function () {
   var xAxis = d3.svg.axis()
                 .scale(this.getXscale())
                 .orient('bottom')
                 .tickFormat(d3.time.format('%b %Y'))
                 .ticks(10);
-
 
   var yAxis1 = d3.svg.axis()
                   .scale(this.getYscale('totalBikes'))
@@ -137,9 +128,7 @@ Chart.prototype.drawGrid = function () {
               .attr('transform', 'translate(0 ,0)')
               .call(yAxis1
                 .tickSize(-(this.width), 0, 0)
-
                 .tickFormat('')
-
               );
   return {
     y_lines: y_lines,
@@ -239,41 +228,6 @@ Chart.prototype.drawArea = function (data, field, group) {
           // .style('fill', t.url())
           .attr('class', 'area ' + field)
           .attr('d', area);
-};
-
-Chart.prototype.drawCircles = function (dataset, group) {
-  var self = this;
-  var mask_circles = group.selectAll('circle.masker')
-                    .data(dataset)
-                    .enter()
-                    .append('circle')
-                    .attr('class', 'masker')
-                    .attr('stroke-width', 5)
-                    .attr('r', 5)
-                    .attr('cy', function(data) {
-                      return(self.getYscale('totalBikes')(data.totalBikes));
-                    })
-                    .attr('cx', function(data) {
-                      return(self.getXscale()(data.date));
-                    });
-  var circles = group.selectAll('circle.marker')
-                    .data(dataset)
-                    .enter()
-                    .append('circle')
-                    .attr('stroke-width', 2)
-                    .attr('r', 3)
-                    .attr('class', 'marker')
-                    .attr('cy', function(data) {
-                      return(self.getYscale('totalBikes')(data.totalBikes));
-                    })
-                    .attr('cx', function(data) {
-                      return(self.getXscale()(data.date));
-                    });
-
-  return {
-    circles,
-    mask_circles
-  };
 };
 
 Chart.prototype.setEvents = function(options) {
