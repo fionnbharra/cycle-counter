@@ -109,7 +109,13 @@ circle.masker {
   font-size: 8px;
 }
 
-
+.grid {
+  opacity: 0;
+  
+  .active & {
+    opacity: 1;
+  }
+}
 
 .grid .tick {
     stroke: $grid;

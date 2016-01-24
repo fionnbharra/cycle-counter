@@ -4,23 +4,26 @@ var PubSub = require('pubsub-js');
 var drawLine = require('./chart-utils/draw-line');
 var drawCircles = require('./chart-utils/draw-circles');
 var drawYaxis = require('./chart-utils/draw-y-axis.js');
+var drawGrid = require('./chart-utils/draw-grid.js');
 
 function BikeGroup(svg, model, xScale, yScale) {
-  var group = svg.append('g')
-                 .attr('class', 'bike_group data_group active');
+  var group = svg.append('g').attr('class', 'bike_group data_group active');
+  var grid = drawGrid(group, xScale, yScale);
   var line = drawLine(model.dataset, 'totalBikes', group, xScale, yScale);
   var circles = drawCircles(model.dataset, 'totalBikes', group, xScale, yScale);
-  var yAxis = drawYaxis(group, yScale, 'left');
+  var yAxis = drawYaxis(group, yScale, this.axisOptions());
   var events = this.setEvents(circles, model.dataset, xScale, yScale);
-
+  
   return {
     line,
+    grid,
     circles,
     yAxis,
     events
   };
 }
 
+// TODO: this is messy, sort.
 BikeGroup.prototype.setEvents = function (circles, data, xScale, yScale) {
   var bisectDate = d3.bisector( (d) => d.date).left;
   circles[1].on('click', function() {
@@ -41,7 +44,13 @@ BikeGroup.prototype.setEvents = function (circles, data, xScale, yScale) {
       y
     };
   });
+};
 
+BikeGroup.prototype.axisOptions = function () {
+  return {
+    orientation: 'left',
+    transform: '0'
+  };
 };
 
 module.exports = BikeGroup;
